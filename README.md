@@ -1,7 +1,5 @@
-# ollama-k8s
-Host your own Ollama service in K8s. 
-
-Read the full Medium stories 
+# Ollama-K8s-GPU
+Host your own Ollama service in K8s. The Medium stories 
 1. [Host Your Own Ollama Service in a Cloud Kubernetes (K8s) Cluster](https://medium.com/@yuxiaojian/host-your-own-ollama-service-in-a-cloud-kubernetes-k8s-cluster-c818ca84a055)
 2. [Run Your Own OLLAMA in Kubernetes with Nvidia GPU](https://medium.com/@yuxiaojian/run-your-own-ollama-in-kubernetes-with-nvidia-gpu-8974d0c1a9df)
 
@@ -51,7 +49,14 @@ kubeadm join 10.152.0.4:6443 --token xxxx --discovery-token-ca-cert-hash sha256:
 
 ```
 
-Create a GPU worker
+## Create a K8s cluster with a GPU worker
+
+GPU node is not always available. After some attempts, created a GPU node in Singapore region
+<p align="center">
+  <img src="images/gpu-worker.png">
+</p>
+
+Then create the master node in a region where GPU is available. 
 ```bash
 gcloud compute instances create ollama-master-gpu --zone=asia-southeast1-c \
 --machine-type=e2-medium \
@@ -63,21 +68,26 @@ sudo -i
 bash <(curl -s https://raw.githubusercontent.com/killer-sh/cks-course-environment/master/cluster-setup/latest/install_master.sh)
 ```
 
+It's much faster and smoother with GPU
+<p align="center">
+  <img src="images/gpu-effect.gif">
+</p>
 
 ### Basic Authentication
+Create [Basic Authentication](https://kubernetes.github.io/ingress-nginx/examples/auth/basic/) secret for Ingress-Nginx Controller 
 ```bash
-apt install -y apache2-utils
+$ apt install -y apache2-utils
 
-htpasswd -c auth ollama
+$ htpasswd -c auth ollama
 New password:
 Re-type new password:
 Adding password for user ollama
 
-kubectl create secret generic basic-auth --from-file=auth -n ollama
+$ kubectl create secret generic basic-auth --from-file=auth -n ollama
 ```
 
 ## Test with python
-LangChain Ollama
+- LangChain Ollama
 ```python
 >>> from langchain_community.llms import Ollama
 >>> from requests.auth import HTTPBasicAuth
@@ -117,7 +127,7 @@ You might wonder why we don't see violet instead of blue. There are a few reason
 So, to summarize: the sky appears blue due to the scattering of sunlight by tiny molecules in the atmosphere, with shorter wavelengths (like blue) being scattered more than longer wavelengths (like red).
 ```
 
-Ollama-python
+- Ollama-python
 ```python
 >>> from ollama import Client
 >>> import httpx
