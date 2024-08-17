@@ -1,10 +1,12 @@
 # ollama-k8s
-Host your Own Ollama service in K8s. 
+Host your own Ollama service in K8s. 
 
-Read the full Medium story here [Host Your Own Ollama Service in a Cloud Kubernetes (K8s) Cluster](https://medium.com/@yuxiaojian/host-your-own-ollama-service-in-a-cloud-kubernetes-k8s-cluster-c818ca84a055)
+Read the full Medium stories 
+1. [Host Your Own Ollama Service in a Cloud Kubernetes (K8s) Cluster](https://medium.com/@yuxiaojian/host-your-own-ollama-service-in-a-cloud-kubernetes-k8s-cluster-c818ca84a055)
+2. [Run Your Own OLLAMA in Kubernetes with Nvidia GPU](https://medium.com/@yuxiaojian/run-your-own-ollama-in-kubernetes-with-nvidia-gpu-8974d0c1a9df)
 
 <p align="center">
-  <img src="images/arch.png">
+  <img src="images/arch-gpu.png">
 </p>
 
 ### Set up a K8s in GCP
@@ -39,12 +41,39 @@ gcloud compute instances create ollama-worker-2 --zone=australia-southeast1-a \
 --image-project=ubuntu-os-cloud \
 --boot-disk-size=50GB
 
+
+
 sudo -i
 bash <(curl -s https://raw.githubusercontent.com/killer-sh/cks-course-environment/master/cluster-setup/latest/install_worker.sh)
 
 # Copied from the master node output
 kubeadm join 10.152.0.4:6443 --token xxxx --discovery-token-ca-cert-hash sha256:xxx
 
+```
+
+Create a GPU worker
+```bash
+gcloud compute instances create ollama-master-gpu --zone=asia-southeast1-c \
+--machine-type=e2-medium \
+--image=ubuntu-2004-focal-v20240808 \
+--image-project=ubuntu-os-cloud \
+--boot-disk-size=50GB
+
+sudo -i
+bash <(curl -s https://raw.githubusercontent.com/killer-sh/cks-course-environment/master/cluster-setup/latest/install_master.sh)
+```
+
+
+### Basic Authentication
+```bash
+apt install -y apache2-utils
+
+htpasswd -c auth ollama
+New password:
+Re-type new password:
+Adding password for user ollama
+
+kubectl create secret generic basic-auth --from-file=auth -n ollama
 ```
 
 ## Test with python
