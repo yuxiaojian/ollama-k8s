@@ -7,7 +7,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webui
+      name: webui
   template:
     metadata:
       labels:
