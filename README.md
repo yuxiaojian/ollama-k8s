@@ -2,6 +2,7 @@
 Host your own Ollama service in K8s. The Medium stories 
 1. [Host Your Own Ollama Service in a Cloud Kubernetes (K8s) Cluster](https://medium.com/@yuxiaojian/host-your-own-ollama-service-in-a-cloud-kubernetes-k8s-cluster-c818ca84a055)
 2. [Run Your Own OLLAMA in Kubernetes with Nvidia GPU](https://medium.com/@yuxiaojian/run-your-own-ollama-in-kubernetes-with-nvidia-gpu-8974d0c1a9df)
+3. [Fine-Tuning Ollama Models with Unsloth](https://medium.com/@yuxiaojian/fine-tuning-ollama-models-with-unsloth-a504ff9e8002)
 
 <p align="center">
   <img src="images/arch-gpu.png">
@@ -72,6 +73,39 @@ It's much faster and smoother with GPU
 <p align="center">
   <img src="images/gpu-effect.gif">
 </p>
+
+
+### Install GPU Driver
+```bash
+$ apt install ubuntu-drivers-common
+$ ubuntu-drivers devices
+$ ubuntu-drivers autoinstall
+
+$ reboot
+$ nvidia-smi
+Mon Aug 19 23:50:42 2024
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.183.01             Driver Version: 535.183.01   CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  Tesla T4                       Off | 00000000:00:04.0 Off |                    0 |
+| N/A   62C    P8              10W /  70W |     70MiB / 15360MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|    0   N/A  N/A      1080      G   /usr/lib/xorg/Xorg                           59MiB |
+|    0   N/A  N/A      1628      G   /usr/bin/gnome-shell                          7MiB |
++---------------------------------------------------------------------------------------+
+
+```
 
 ### Basic Authentication
 Create [Basic Authentication](https://kubernetes.github.io/ingress-nginx/examples/auth/basic/) secret for Ingress-Nginx Controller 
